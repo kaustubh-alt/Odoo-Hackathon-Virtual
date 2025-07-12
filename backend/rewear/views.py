@@ -207,6 +207,8 @@ class ExchangeView(APIView):
         post2_id = request.data.get('post2')
         userid = request.data.get('userid')
 
+        print(f"Received post1_id: {post1_id}, post2_id: {post2_id}, userid: {userid}")
+
         if not all([post1_id, post2_id, userid]):
             return Response({'success': False, 'error': 'Missing fields'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -214,6 +216,14 @@ class ExchangeView(APIView):
             user = CustomUser.objects.get(id=userid)
             post1 = Post.objects.get(id=post1_id)
             post2 = Post.objects.get(id=post2_id)
+
+            post1.visible = True
+            post1.status = 'exchange'
+            post1.save()
+            post2.visible = True
+            post2.status = 'exchange'   
+            post2.save()           
+
         except CustomUser.DoesNotExist:
             return Response({'success': False, 'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
         except Post.DoesNotExist:

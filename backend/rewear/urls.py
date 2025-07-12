@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import SignUpView, LoginView, PostListView, CreatePostView, EditPostView, getrequest,GetUser
+from .views import SignUpView, LoginView, PostListView, CreatePostView, EditPostView, getrequest,GetUser, ExchangeView 
 
 urlpatterns = [
     path('signup/', SignUpView.as_view(), name='signup'),
@@ -8,5 +8,6 @@ urlpatterns = [
     path('create-post/<int:userid>/', CreatePostView.as_view(), name='create-post'),  # Create post for user id
     path('edit-post/<int:userid>/', EditPostView.as_view(), name='edit-post'),
     path('requests/<int:userid>/',getrequest.as_view(), name='requests'),
-    path('user/<int:userid>/',GetUser.as_view(),name="user profile")  # For requests by user id
+    path('user/<int:userid>/',GetUser.as_view(),name="user profile"), # For requests by user id
+    path('exchange/', ExchangeView.as_view(),name="exchange-request")  # For exchange requests
 ]
