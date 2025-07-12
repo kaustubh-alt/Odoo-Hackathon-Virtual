@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReWear - Create Post</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#1E40AF',
+                        accent: '#F59E0B'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-semibold text-gray-900">ReWear</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="feed.html" class="text-gray-500 hover:text-gray-700">Feed</a>
+                    <a href="myposts.html" class="text-gray-500 hover:text-gray-700">My Posts</a>
+                    <a href="create-post.html" class="text-primary font-medium">Create Post</a>
+                    <a href="requests.html" class="text-gray-500 hover:text-gray-700">Requests</a>
+                    <button id="logoutBtn" class="text-gray-500 hover:text-gray-700">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-3xl mx-auto py-6 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="px-4 py-6 sm:px-0">
+            <h2 class="text-2xl font-bold text-gray-900">Create New Post</h2>
+            <p class="mt-1 text-sm text-gray-600">Share your clothes with the community</p>
+        </div>
+
+        <!-- Create Post Form -->
+        <div class="bg-white shadow rounded-lg">
+            <form id="createPostForm" class="space-y-6 p-6">
+                <!-- Title -->
+                <div>
+                    <label for="title" class="block text-sm font-medium text-gray-700">Title *</label>
+                    <input type="text" id="title" name="title" required
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
+                        placeholder="e.g., Vintage Denim Jacket">
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <label for="description" class="block text-sm font-medium text-gray-700">Description *</label>
+                    <textarea id="description" name="description" rows="4" required
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
+                        placeholder="Describe the condition, style, and any notable features..."></textarea>
+                </div>
+
+                <!-- Damage and Size -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="damage" class="block text-sm font-medium text-gray-700">Damage</label>
+                        <input type="text" id="damage" name="damage"
+                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
+                            placeholder="e.g., Small tear on sleeve">
+                    </div>
+                    <div>
+                        <label for="size" class="block text-sm font-medium text-gray-700">Size *</label>
+                        <select id="size" name="size" required
+                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm">
+                            <option value="">Select size</option>
+                            <option value="XS">XS</option>
+                            <option value="S">S</option>
+                            <option value="M">M</option>
+                            <option value="L">L</option>
+                            <option value="XL">XL</option>
+                            <option value="XXL">XXL</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Price and Visibility -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="price" class="block text-sm font-medium text-gray-700">Price *</label>
+                        <div class="mt-1 relative rounded-md shadow-sm">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <span class="text-gray-500 sm:text-sm">$</span>
+                            </div>
+                            <input type="number" id="price" name="price" step="0.01" required
+                                class="pl-7 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
+                                placeholder="0.00">
+                        </div>
+                    </div>
+                    <div class="flex items-center mt-6">
+                        <input type="checkbox" id="visible" name="visible" checked
+                            class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                        <label for="visible" class="ml-2 block text-sm text-gray-900">Make post visible to
+                            others</label>
+                    </div>
+                </div>
+
+                <!-- Images -->
+                <div>
+                    <label for="images" class="block text-sm font-medium text-gray-700">Images *</label>
+                    <div
+                        class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                        <div class="space-y-1 text-center">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none"
+                                viewBox="0 0 48 48">
+                                <path
+                                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <div class="flex text-sm text-gray-600">
+                                <label for="images"
+                                    class="relative cursor-pointer bg-white rounded-md font-medium text-primary hover:text-secondary focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary">
+                                    <span>Upload images</span>
+                                    <input id="images" name="images" type="file" multiple accept="image/*"
+                                        class="sr-only" required>
+                                </label>
+                                <p class="pl-1">or drag and drop</p>
+                            </div>
+                            <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB each</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Image Preview -->
+                <div id="imagePreview" class="hidden">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Image Preview</label>
+                    <div id="imageGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        <!-- Image previews will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-end space-x-3">
+                    <a href="feed.html"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">
+                        Cancel
+                    </a>
+                    <button type="submit" id="submitBtn"
+                        class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-md hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                        Create Post
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div id="loadingOverlay"
+            class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+            <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                <div class="mt-3 text-center">
+                    <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                    </div>
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 mt-4">Creating Post...</h3>
+                    <p class="text-sm text-gray-500 mt-2">Please wait while we upload your images and create your post.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/create-post.js"></script>
+</body>
+
+</html>
