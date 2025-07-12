@@ -361,8 +361,8 @@ class Feed {
         }
 
         const requestBody = {
-            post1: this.selectedPostForExchange,
-            post2: userPostId,
+            post1_id: this.selectedPostForExchange,
+            post2_id: userPostId,
             userid: parseInt(this.userid),
         };
 
@@ -453,4 +453,4 @@ class Feed {
 let feed;
 document.addEventListener('DOMContentLoaded', () => {
     feed = new Feed();
-}); 
+});

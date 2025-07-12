@@ -1,129 +1,460 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ReWear - Exchange Requests</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#3B82F6',
-                        secondary: '#1E40AF',
-                        accent: '#F59E0B'
-                    }
-                }
-            }
-        }
-    </script>
-</head>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 
-<body class="bg-gray-50">
+      * {
+        font-family: "Inter", sans-serif;
+      }
+
+      .page-container {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        min-height: 100vh;
+      }
+
+      .nav-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .nav-link {
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .nav-link::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+        transition: width 0.3s ease;
+      }
+
+      .nav-link:hover::after,
+      .nav-link.active::after {
+        width: 100%;
+      }
+
+      .nav-link.active {
+        color: #3b82f6;
+        font-weight: 600;
+      }
+
+      .content-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+        animation: fadeInUp 0.6s ease-out;
+      }
+
+      .content-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      }
+
+      .request-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+        animation: fadeInUp 0.6s ease-out;
+      }
+
+      .request-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn-primary::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.5s;
+      }
+
+      .btn-primary:hover::before {
+        left: 100%;
+      }
+
+      .btn-primary:hover {
+        background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+      }
+
+      .btn-success {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        transition: all 0.3s ease;
+      }
+
+      .btn-success:hover {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+      }
+
+      .btn-danger {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        transition: all 0.3s ease;
+      }
+
+      .btn-danger:hover {
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
+      }
+
+      .brand-title {
+        background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: fadeInUp 0.8s ease-out;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .loading-spinner {
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .modal-overlay {
+        backdrop-filter: blur(5px);
+        background: rgba(0, 0, 0, 0.5);
+      }
+
+      .modal-content {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        animation: slideInDown 0.3s ease-out;
+      }
+
+      @keyframes slideInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .empty-state {
+        animation: fadeInUp 0.8s ease-out;
+      }
+
+      .error-state {
+        animation: shake 0.5s ease-in-out;
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-5px);
+        }
+        75% {
+          transform: translateX(5px);
+        }
+      }
+
+      .floating {
+        animation: floating 3s ease-in-out infinite;
+      }
+
+      @keyframes floating {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-5px);
+        }
+      }
+
+      .status-badge {
+        transition: all 0.3s ease;
+      }
+
+      .status-badge.pending {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+      }
+
+      .status-badge.accepted {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+      }
+
+      .status-badge.rejected {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+      }
+    </style>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#3B82F6",
+              secondary: "#1E40AF",
+              accent: "#F59E0B",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+
+  <body class="page-container">
     <!-- Navigation -->
-    <nav class="bg-white shadow-sm border-b">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <h1 class="text-xl font-semibold text-gray-900">ReWear</h1>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <a href="feed.html" class="text-gray-500 hover:text-gray-700">Feed</a>
-                    <a href="myposts.html" class="text-gray-500 hover:text-gray-700">My Posts</a>
-                    <a href="create-post.html" class="text-gray-500 hover:text-gray-700">Create Post</a>
-                    <a href="requests.html" class="text-primary font-medium">Requests</a>
-                    <button id="logoutBtn" class="text-gray-500 hover:text-gray-700">Logout</button>
-                </div>
-            </div>
+    <nav class="nav-container">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+          <div class="flex items-center">
+            <h1 class="text-2xl font-bold brand-title">ReWear</h1>
+          </div>
+          <div class="flex items-center space-x-6">
+            <a
+              href="feed.html"
+              class="nav-link text-gray-500 hover:text-gray-700"
+              >Feed</a
+            >
+            <a
+              href="myposts.html"
+              class="nav-link text-gray-500 hover:text-gray-700"
+              >My Posts</a
+            >
+            <a
+              href="create-post.html"
+              class="nav-link text-gray-500 hover:text-gray-700"
+              >Create Post</a
+            >
+            <a
+              href="requests.html"
+              class="nav-link active text-primary font-medium"
+              >Requests</a
+            >
+            <button
+              id="logoutBtn"
+              class="nav-link text-gray-500 hover:text-gray-700 transition-colors"
+            >
+              Logout
+            </button>
+          </div>
         </div>
+      </div>
     </nav>
 
     <!-- Main Content -->
-    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <!-- Header -->
-        <div class="px-4 py-6 sm:px-0">
-            <h2 class="text-2xl font-bold text-gray-900">Exchange Requests</h2>
-            <p class="mt-1 text-sm text-gray-600">Manage your exchange requests</p>
-        </div>
+    <div class="max-w-7xl mx-auto py-8 sm:px-6 lg:px-8">
+      <!-- Header -->
+      <div class="px-4 py-8 sm:px-0 floating">
+        <h2 class="text-4xl font-bold text-gray-900 mb-2">Exchange Requests</h2>
+        <p class="text-lg text-gray-600">Manage your exchange requests</p>
+      </div>
 
-        <!-- Loading State -->
-        <div id="loading" class="flex justify-center items-center py-12">
-            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        </div>
+      <!-- Loading State -->
+      <div id="loading" class="flex justify-center items-center py-16">
+        <div
+          class="loading-spinner rounded-full h-12 w-12 border-4 border-primary border-t-transparent"
+        ></div>
+      </div>
 
-        <!-- Requests Content -->
-        <div id="requestsContainer" class="hidden">
-            <!-- Incoming Requests -->
-            <div class="mb-8">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Incoming Requests</h3>
-                <div id="incomingRequests" class="space-y-4">
-                    <!-- Incoming requests will be dynamically inserted here -->
-                </div>
-                <div id="noIncomingRequests" class="hidden text-center py-8">
-                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-                    </svg>
-                    <h4 class="mt-2 text-sm font-medium text-gray-900">No incoming requests</h4>
-                    <p class="mt-1 text-sm text-gray-500">You haven't received any exchange requests yet.</p>
-                </div>
-            </div>
-
-            <!-- Outgoing Requests -->
-            <div>
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Outgoing Requests</h3>
-                <div id="outgoingRequests" class="space-y-4">
-                    <!-- Outgoing requests will be dynamically inserted here -->
-                </div>
-                <div id="noOutgoingRequests" class="hidden text-center py-8">
-                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                    </svg>
-                    <h4 class="mt-2 text-sm font-medium text-gray-900">No outgoing requests</h4>
-                    <p class="mt-1 text-sm text-gray-500">You haven't sent any exchange requests yet.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Error State -->
-        <div id="errorState" class="hidden text-center py-12">
-            <svg class="mx-auto h-12 w-12 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+      <!-- Requests Content -->
+      <div id="requestsContainer" class="hidden space-y-8">
+        <!-- Incoming Requests -->
+        <div class="content-card rounded-2xl p-8">
+          <h3 class="text-2xl font-bold text-gray-900 mb-6">
+            Incoming Requests
+          </h3>
+          <div id="incomingRequests" class="space-y-6">
+            <!-- Incoming requests will be dynamically inserted here -->
+          </div>
+          <div
+            id="noIncomingRequests"
+            class="hidden text-center py-12 empty-state"
+          >
+            <svg
+              class="mx-auto h-16 w-16 text-gray-400 mb-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+              />
             </svg>
-            <h3 class="mt-2 text-sm font-medium text-gray-900">Error loading requests</h3>
-            <p id="errorMessage" class="mt-1 text-sm text-gray-500">Something went wrong. Please try again.</p>
-            <button id="retryBtn"
-                class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-secondary">
-                Try Again
-            </button>
+            <h4 class="text-xl font-semibold text-gray-900 mb-2">
+              No incoming requests
+            </h4>
+            <p class="text-gray-600">
+              You haven't received any exchange requests yet.
+            </p>
+          </div>
         </div>
+
+        <!-- Outgoing Requests -->
+        <div class="content-card rounded-2xl p-8">
+          <h3 class="text-2xl font-bold text-gray-900 mb-6">
+            Outgoing Requests
+          </h3>
+          <div id="outgoingRequests" class="space-y-6">
+            <!-- Outgoing requests will be dynamically inserted here -->
+          </div>
+          <div
+            id="noOutgoingRequests"
+            class="hidden text-center py-12 empty-state"
+          >
+            <svg
+              class="mx-auto h-16 w-16 text-gray-400 mb-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+              />
+            </svg>
+            <h4 class="text-xl font-semibold text-gray-900 mb-2">
+              No outgoing requests
+            </h4>
+            <p class="text-gray-600">
+              You haven't sent any exchange requests yet.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error State -->
+      <div id="errorState" class="hidden text-center py-16 error-state">
+        <div class="content-card rounded-2xl p-12 max-w-md mx-auto">
+          <svg
+            class="mx-auto h-16 w-16 text-red-400 mb-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+            />
+          </svg>
+          <h3 class="text-xl font-semibold text-gray-900 mb-2">
+            Error loading requests
+          </h3>
+          <p id="errorMessage" class="text-gray-600 mb-6">
+            Something went wrong. Please try again.
+          </p>
+          <button
+            id="retryBtn"
+            class="btn-primary inline-flex items-center px-6 py-3 text-lg font-medium rounded-lg text-white"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Request Details Modal -->
-    <div id="requestModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-        <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
-            <div class="mt-3">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 id="modalTitle" class="text-lg font-medium text-gray-900">Exchange Request Details</h3>
-                    <button id="closeRequestModal" class="text-gray-400 hover:text-gray-600">
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-                <div id="modalContent" class="space-y-4">
-                    <!-- Modal content will be dynamically inserted here -->
-                </div>
-            </div>
+    <div
+      id="requestModal"
+      class="hidden fixed inset-0 modal-overlay overflow-y-auto h-full w-full z-50"
+    >
+      <div class="relative top-20 mx-auto p-5 w-11/12 md:w-3/4 lg:w-1/2">
+        <div class="modal-content rounded-2xl p-8">
+          <div class="flex justify-between items-center mb-6">
+            <h3 id="modalTitle" class="text-2xl font-bold text-gray-900">
+              Exchange Request Details
+            </h3>
+            <button
+              id="closeRequestModal"
+              class="text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <svg
+                class="h-8 w-8"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+          <div id="modalContent" class="space-y-6">
+            <!-- Modal content will be dynamically inserted here -->
+          </div>
         </div>
+      </div>
     </div>
 
     <script src="js/requests.js"></script>
-</body>
-
+  </body>
 </html>

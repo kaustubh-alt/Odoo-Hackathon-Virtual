@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | ReWear</title>
+    <style>
+        :root {
+            --primary: #1a3c2e;
+            --secondary: #e8f5e9;
+            --accent: #388e3c;
+            --danger: #d32f2f;
+            --border: #cfd8dc;
+            --radius: 12px;
+            --shadow: 0 2px 12px rgba(30, 60, 46, 0.08);
+        }
+        body {
+            background: var(--secondary);
+            color: var(--primary);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+        }
+        .admin-header {
+            background: var(--primary);
+            color: #fff;
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow);
+        }
+        .admin-header h1 {
+            margin: 0;
+            font-size: 2rem;
+            letter-spacing: 1px;
+        }
+        .admin-header .slogan {
+            font-size: 1rem;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            background: #fff;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+        }
+        h2 {
+            margin-top: 0;
+            font-size: 1.3rem;
+            color: var(--primary);
+        }
+        .item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .item-card {
+            display: flex;
+            align-items: flex-start;
+            background: var(--secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: 0 1px 4px rgba(30,60,46,0.04);
+            padding: 1rem;
+            gap: 1.5rem;
+            transition: box-shadow 0.2s;
+        }
+        .item-card:hover {
+            box-shadow: 0 4px 16px rgba(30,60,46,0.10);
+        }
+        .item-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+        .item-info {
+            flex: 1;
+        }
+        .item-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0 0 0.3rem 0;
+        }
+        .item-desc {
+            font-size: 0.98rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        .item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .btn {
+            padding: 0.4rem 1.1rem;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+        }
+        .btn-approve {
+            background: var(--accent);
+            color: #fff;
+        }
+        .btn-approve:hover {
+            background: #256029;
+        }
+        .btn-reject {
+            background: var(--danger);
+            color: #fff;
+        }
+        .btn-reject:hover {
+            background: #a31515;
+        }
+        .btn-remove {
+            background: #fff;
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+        .btn-remove:hover {
+            background: var(--danger);
+            color: #fff;
+        }
+        .status {
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+        .status.approved { color: var(--accent); }
+        .status.rejected { color: var(--danger); }
+        @media (max-width: 600px) {
+            .container { padding: 1rem; }
+            .item-card { flex-direction: column; align-items: stretch; }
+            .item-img { width: 100%; height: 120px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-header">
+        <div>
+            <h1>ReWear Admin Panel</h1>
+            <div class="slogan">Sustainable Fashion Oversight</div>
+        </div>
+        <div style="font-size:1.1rem;opacity:0.7;">Admin</div>
+    </div>
+    <div class="container">
+        <h2>Moderate Item Listings</h2>
+        <div class="item-list" id="itemList">
+            <!-- Items will be rendered here -->
+        </div>
+    </div>
+    <div class="container" style="margin-top:1.5rem;">
+        <h2>Activity Log</h2>
+        <div id="activityLog" style="min-height:60px;font-size:1rem;color:var(--primary);"></div>
+    </div>
+    <script>
+        // Hardcoded item data
+        const items = [
+            {
+                id: 1,
+                title: "Men's Denim Jacket",
+                desc: "Classic blue denim, lightly used, size M.",
+                img: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
+                status: "pending"
+            },
+            {
+                id: 2,
+                title: "Women's Summer Dress",
+                desc: "Floral print, eco-friendly fabric, size S.",
+                img: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=400&q=80",
+                status: "pending"
+            },
+            {
+                id: 3,
+                title: "Unisex Hoodie",
+                desc: "Organic cotton, forest green, size L.",
+                img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80",
+                status: "pending"
+            }
+        ];
+        // Activity log array
+        const activityLog = [];
+        function addLog(action, item) {
+            const now = new Date();
+            const time = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+            let msg = `[${time}] `;
+            if(action === 'approved') msg += `Approved: <b>${item.title}</b>`;
+            if(action === 'rejected') msg += `Rejected: <b>${item.title}</b>`;
+            if(action === 'removed') msg += `Removed: <b>${item.title}</b>`;
+            activityLog.unshift(msg); // newest first
+            renderLog();
+        }
+        function renderLog() {
+            const logDiv = document.getElementById('activityLog');
+            if(activityLog.length === 0) {
+                logDiv.innerHTML = '<span style="opacity:0.6;">No actions yet.</span>';
+            } else {
+                logDiv.innerHTML = activityLog.map(msg => `<div style="margin-bottom:0.3em;">${msg}</div>`).join('');
+            }
+        }
+        function renderItems() {
+            const list = document.getElementById('itemList');
+            list.innerHTML = '';
+            items.forEach(item => {
+                if (item.status === 'removed') return;
+                const card = document.createElement('div');
+                card.className = 'item-card';
+                card.innerHTML = `
+                    <img class="item-img" src="${item.img}" alt="${item.title}">
+                    <div class="item-info">
+                        <div class="item-title">${item.title}</div>
+                        <div class="item-desc">${item.desc}</div>
+                        <div class="item-actions">
+                            <button class="btn btn-approve" ${item.status==='approved'?'disabled':''}>Approve</button>
+                            <button class="btn btn-reject" ${item.status==='rejected'?'disabled':''}>Reject</button>
+                            <button class="btn btn-remove">Remove</button>
+                        </div>
+                        <div class="status ${item.status}">
+                            ${item.status==='pending' ? 'Pending Review' : item.status.charAt(0).toUpperCase()+item.status.slice(1)}
+                        </div>
+                    </div>
+                `;
+                // Button actions
+                const [approveBtn, rejectBtn, removeBtn] = card.querySelectorAll('button');
+                approveBtn.onclick = () => {
+                    item.status = 'approved';
+                    addLog('approved', item);
+                    renderItems();
+                };
+                rejectBtn.onclick = () => {
+                    item.status = 'rejected';
+                    addLog('rejected', item);
+                    renderItems();
+                };
+                removeBtn.onclick = () => {
+                    item.status = 'removed';
+                    addLog('removed', item);
+                    renderItems();
+                };
+                list.appendChild(card);
+            });
+        }
+        renderItems();
+        renderLog();
+    </script>
+</body>
+</html> 
